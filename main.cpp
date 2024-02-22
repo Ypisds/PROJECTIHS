@@ -10,6 +10,8 @@
 
 using namespace std;
 
+//oiiiiiii
+
 struct playerInput{
     Rectangle inputRec;
     bool isActive;
