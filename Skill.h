@@ -18,13 +18,15 @@ class Skill {
         Player *p_inimigo;
         Ball *ball;
         bool isActive;
+        Sound gemidao;
 
         void increaseSpeed();
         void changeDirection();
         void changeEnemyControl();
         void updateSkill();
+        void playGemidao();
 
-        Skill(int id, Player *p_aliado, Player *p_inimigo, Ball *ball);
+        Skill(int id, Player *p_aliado, Player *p_inimigo, Ball *ball, Sound gemidao);
         Skill();
 };
 

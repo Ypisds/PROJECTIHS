@@ -101,12 +101,13 @@ int main(void)
     string p1score;
     string p2score;
 
-    Skill sp1(3, &p1, &p2, &ball);
-    Skill sp2(2, &p2, &p1, &ball);
 
     InitAudioDevice();
     Sound bonk = LoadSound("bonk.wav");
+    Sound gemidao = LoadSound("gemidao.wav");
 
+    Skill sp1(69, &p1, &p2, &ball, gemidao);
+    Skill sp2(2, &p2, &p1, &ball, gemidao);
     
 
     int gameState = 0;

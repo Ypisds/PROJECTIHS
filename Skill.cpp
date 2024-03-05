@@ -1,12 +1,13 @@
 #include "Skill.h"
 #include <iostream>
 
-Skill::Skill(int id, Player *p_aliado, Player *p_inimigo, Ball *ball ) {
+Skill::Skill(int id, Player *p_aliado, Player *p_inimigo, Ball *ball, Sound gemidao) {
     this->id = id;
     this->p_aliado = p_aliado;
     this->p_inimigo = p_inimigo;
     this->ball = ball;
     this->isActive = false;
+    this->gemidao = gemidao;
 
     
      if(id == 1) {
@@ -25,6 +26,11 @@ Skill::Skill(int id, Player *p_aliado, Player *p_inimigo, Ball *ball ) {
         this->cd = 15*60;
         this->timeremaining = 0;
      }
+     else if(id == 69) {
+        this->skill_time = 360;
+        this->cd = 15*60;
+        this->timeremaining = 0;
+     }
 }
 
 void Skill::increaseSpeed() {
@@ -39,6 +45,10 @@ void Skill::changeEnemyControl() {
     p_inimigo->isControlInverted = true;
 }
 
+void Skill::playGemidao() {
+    PlaySound(gemidao);
+}
+
 void Skill::updateSkill() {
     if(this->isActive) {
         switch (this->id) {
@@ -50,6 +60,9 @@ void Skill::updateSkill() {
                 break;
             case 3:
                 changeEnemyControl();
+                break;
+            case 69:
+                playGemidao();
                 break;
             default:
                 break;
