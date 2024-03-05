@@ -80,3 +80,16 @@ bool Player::playerWon(Ball ball){
     }
     return false;
 }
+
+void Player::resetWin(Player *p1, Player *p2) {
+    p1->name.clear();
+    p2->name.clear();
+    p1-> score = 0;
+    p2-> score = 0;
+    p1->rec.y = SCREEN_HEIGHT/2 - SCREEN_HEIGHT/16;
+    p2->rec.y = SCREEN_HEIGHT/2 - SCREEN_HEIGHT/16;
+    p1->rec.height = SCREEN_HEIGHT/8;
+    p2->rec.height = SCREEN_HEIGHT/8;
+    p1->recSpeed = DEFAULT_REC_SPEED;
+    p2->recSpeed = DEFAULT_REC_SPEED;
+}

@@ -28,6 +28,8 @@ class Player{
         bool playerWon(Ball ball);
         
         static void inputHandler(Player *p1, Player *p2);
+
+        static void resetWin(Player *p1, Player *p2);
             
         
 

@@ -180,6 +180,22 @@ int main(void)
 
 
             resetBall(&p1, &p2, &ball, &updateFlag, DEFAULT_BALL_SPEED);
+
+            if(p1.score >= 4 || p2.score >= 4) {
+                Player::resetWin(&p1, &p2);
+                resetBall(&p1,&p2,&ball,&updateFlag,DEFAULT_BALL_SPEED);
+                p1Input.text.clear();
+                p2Input.text.clear();
+                p1Input.isActive = false;
+                p2Input.isActive = false;
+
+                gameState = 0;
+
+            }
+
+            
+
+            
             
 
 
