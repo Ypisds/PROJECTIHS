@@ -16,6 +16,7 @@ Player::Player(string name, bool side){
     this->recColor = (this->side == LEFT_SIDE) ? BLUE : RED;
     this->score = 0;
     this->recSpeed = DEFAULT_REC_SPEED;
+    this->isControlInverted = false;
 }
 
 void Player::inputHandler(Player *leftPlayer, Player *rightPlayer){
@@ -43,26 +44,49 @@ void Player::inputHandler(Player *leftPlayer, Player *rightPlayer){
     // }
 
     // leftPlayer input handler
+    if(!leftPlayer->isControlInverted) {
 
-    if(IsKeyDown(KEY_W) && leftPlayer->rec.y>0){
+        if(IsKeyDown(KEY_W) && leftPlayer->rec.y>0){
             leftPlayer->rec.y-=leftPlayer->recSpeed;
             if(leftPlayer->rec.y < 0) leftPlayer->rec.y = 0;
+        }
+        if(IsKeyDown(KEY_S) && leftPlayer->rec.y<768){
+            leftPlayer->rec.y+=leftPlayer->recSpeed;
+            if(leftPlayer->rec.y > 768 - leftPlayer->rec.height) leftPlayer->rec.y = 768 - leftPlayer->rec.height;
+        }
     }
-    if(IsKeyDown(KEY_S) && leftPlayer->rec.y<768){
-        leftPlayer->rec.y+=leftPlayer->recSpeed;
-        if(leftPlayer->rec.y > 768 - leftPlayer->rec.height) leftPlayer->rec.y = 768 - leftPlayer->rec.height;
+    else {
+        if(IsKeyDown(KEY_S) && leftPlayer->rec.y>0){
+            leftPlayer->rec.y-=leftPlayer->recSpeed;
+            if(leftPlayer->rec.y < 0) leftPlayer->rec.y = 0;
+        }
+        if(IsKeyDown(KEY_W) && leftPlayer->rec.y<768){
+            leftPlayer->rec.y+=leftPlayer->recSpeed;
+            if(leftPlayer->rec.y > 768 - leftPlayer->rec.height) leftPlayer->rec.y = 768 - leftPlayer->rec.height;
+        }
     }
     
 
     //right player
-
-    if(IsKeyDown(KEY_UP) && rightPlayer->rec.y>0){
-        rightPlayer->rec.y-=rightPlayer->recSpeed;
-        if(rightPlayer->rec.y < 0) rightPlayer->rec.y = 0;
+    if(!rightPlayer->isControlInverted) {
+        if(IsKeyDown(KEY_UP) && rightPlayer->rec.y>0){
+            rightPlayer->rec.y-=rightPlayer->recSpeed;
+            if(rightPlayer->rec.y < 0) rightPlayer->rec.y = 0;
+        }
+        if(IsKeyDown(KEY_DOWN) && rightPlayer->rec.y<768){
+            rightPlayer->rec.y+=rightPlayer->recSpeed;
+            if(rightPlayer->rec.y > 768 - rightPlayer->rec.height) rightPlayer->rec.y = 768 - rightPlayer->rec.height;
+        }
     }
-    if(IsKeyDown(KEY_DOWN) && rightPlayer->rec.y<768){
-        rightPlayer->rec.y+=rightPlayer->recSpeed;
-        if(rightPlayer->rec.y > 768 - rightPlayer->rec.height) rightPlayer->rec.y = 768 - rightPlayer->rec.height;
+    else {
+        if(IsKeyDown(KEY_DOWN) && rightPlayer->rec.y>0){
+            rightPlayer->rec.y-=rightPlayer->recSpeed;
+            if(rightPlayer->rec.y < 0) rightPlayer->rec.y = 0;
+        }
+        if(IsKeyDown(KEY_UP) && rightPlayer->rec.y<768){
+            rightPlayer->rec.y+=rightPlayer->recSpeed;
+            if(rightPlayer->rec.y > 768 - rightPlayer->rec.height) rightPlayer->rec.y = 768 - rightPlayer->rec.height;
+        }
     }
     
 }

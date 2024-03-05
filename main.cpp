@@ -5,6 +5,7 @@
 #include "ball.h"
 #include "math.h"
 #include "misc.h"
+#include "Skill.h"
 
 #define DEFAULT_BALL_SPEED 8
 
@@ -100,6 +101,9 @@ int main(void)
     string p1score;
     string p2score;
 
+    Skill sp1(3, &p1, &p2, &ball);
+    Skill sp2(2, &p2, &p1, &ball);
+
     InitAudioDevice();
     Sound bonk = LoadSound("bonk.wav");
 
@@ -192,6 +196,17 @@ int main(void)
                 gameState = 0;
 
             }
+
+            if(IsKeyPressed(KEY_LEFT_SHIFT) && sp1.isActive == false && sp1.timeremaining <=0) {
+                sp1.isActive = true;
+                sp1.timeremaining = sp1.cd;
+            }
+            if(IsKeyPressed(KEY_RIGHT_SHIFT) && sp2.isActive == false && sp2.timeremaining <=0) {
+                sp2.isActive = true;
+                sp2.timeremaining = sp2.cd;
+            }
+            sp1.updateSkill();
+            sp2.updateSkill();
 
             
 
