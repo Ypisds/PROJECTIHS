@@ -27,7 +27,7 @@ Skill::Skill(int id, Player *p_aliado, Player *p_inimigo, Ball *ball, Sound gemi
         this->timeremaining = 0;
      }
      else if(id == 69) {
-        this->skill_time = 360;
+        this->skill_time = 0;
         this->cd = 15*60;
         this->timeremaining = 0;
      }
