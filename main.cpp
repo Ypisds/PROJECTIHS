@@ -25,6 +25,14 @@ bool isMouseInsideRec(Rectangle rec);
 
 void handleInputChar(playerInput *inputP1, playerInput *inputP2);
 
+void skillInputCheck(playerInput *skill);
+
+void backToMenu(playerInput *skill);
+
+void p1skillshandler(playerInput *p1s1, playerInput *p1s2, playerInput *p1s3, Skill *sp1, int parameter);
+
+int gameState = 0;
+
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -98,19 +106,115 @@ int main(void)
     playRec.width = 150;
     playRec.height = 50;
 
+    Rectangle SkillRec;
+    SkillRec.x = screenWidth/2 - screenWidth/16;
+    SkillRec.y = screenHeight - screenHeight/8;
+    SkillRec.width = 100;
+    SkillRec.height = 50;
+
+
+    playerInput skillInput;
+    skillInput.inputRec = SkillRec;
+    skillInput.isActive = false;
+    skillInput.text = "Skills";
+
+    // skills selecting:
+    
+
+    Rectangle P1S1;
+    P1S1.x = 100;
+    P1S1.y = 200;
+    P1S1.width = 100;
+    P1S1.height = 100;
+
+    playerInput P1S1Input;
+    P1S1Input.inputRec = P1S1;
+    P1S1Input.isActive = false;
+    P1S1Input.text = "S1";
+
+    Rectangle P1S2;
+    P1S2.x = 230;
+    P1S2.y = 200;
+    P1S2.width = 100;
+    P1S2.height = 100;
+
+    playerInput P1S2Input;
+    P1S2Input.inputRec = P1S2;
+    P1S2Input.isActive = false;
+    P1S2Input.text = "S2";
+
+    Rectangle P1S3;
+    P1S3.x = 360;
+    P1S3.y = 200;
+    P1S3.width = 100;
+    P1S3.height = 100;
+
+    playerInput P1S3Input;
+    P1S3Input.inputRec = P1S3;
+    P1S3Input.isActive = false;
+    P1S3Input.text = "S3";
+
+    // P2 SKILLS:
+
+    Rectangle P2S1;
+    P2S1.x = screenWidth/2 +100;
+    P2S1.y = 200;
+    P2S1.width = 100;
+    P2S1.height = 100;
+
+    playerInput P2S1Input;
+    P2S1Input.inputRec = P2S1;
+    P2S1Input.isActive = false;
+    P2S1Input.text = "S1";
+
+    Rectangle P2S2;
+    P2S2.x = screenWidth/2 +230;
+    P2S2.y = 200;
+    P2S2.width = 100;
+    P2S2.height = 100;
+
+    playerInput P2S2Input;
+    P2S2Input.inputRec = P2S2;
+    P2S2Input.isActive = false;
+    P2S2Input.text = "S2";
+
+    Rectangle P2S3;
+    P2S3.x = screenWidth/2 +360;
+    P2S3.y = 200;
+    P2S3.width = 100;
+    P2S3.height = 100;
+
+    playerInput P2S3Input;
+    P2S3Input.inputRec = P2S3;
+    P2S3Input.isActive = false;
+    P2S3Input.text = "S3";
+
+
+
+    
+
+    
+
     string p1score;
     string p2score;
+
+    string p1wins = "P1 Wins!";
+    string p2wins = "P2 Wins!";
 
 
     InitAudioDevice();
     Sound bonk = LoadSound("bonk.wav");
     Sound gemidao = LoadSound("gemidao.wav");
 
-    Skill sp1(69, &p1, &p2, &ball, gemidao);
-    Skill sp2(2, &p2, &p1, &ball, gemidao);
+    Skill sp1(1, &p1, &p2, &ball, gemidao);
+    Skill sp2(1, &p2, &p1, &ball, gemidao);
+
+    string p1timer = "0.0";
+    string p2timer = "0.0";
+    string skillpronta = "Skill Pronta!";
     
 
-    int gameState = 0;
+    
 
     Texture2D sport = LoadTexture("sport.png");
     cout << IsTextureReady(sport);
@@ -134,7 +238,10 @@ int main(void)
             DrawRectangleLinesEx(P1NameRec, 2, BLACK);
             DrawText(insertP2Name.data(), 245, 500, 30, RED);
             DrawRectangleLinesEx(P2NameRec, 2, BLACK);
+            DrawRectangleLinesEx(SkillRec, 2, BLACK);
+            DrawText(skillInput.text.data(), 610, 684, 30, GREEN);
             controlGameInputActivation(&p1Input, &p2Input);
+            
             if(p1Input.isActive){
                 DrawRectangleLinesEx(P1NameRec, 2, RED);
             }
@@ -148,7 +255,13 @@ int main(void)
                 DrawRectangleLinesEx(P2NameRec, 2, BLACK);
             }
 
+            if(skillInput.isActive) {
+                DrawRectangleLinesEx(SkillRec, 2, RED);
+            }
+            else DrawRectangleLinesEx(SkillRec, 2, BLACK);
+
             handleInputChar(&p1Input, &p2Input);
+            skillInputCheck(&skillInput);
             DrawText(p1Input.text.data(), 610, 205, 30, BLUE);
             DrawText(p2Input.text.data(), 610, 505, 30, RED);
 
@@ -186,7 +299,7 @@ int main(void)
 
             resetBall(&p1, &p2, &ball, &updateFlag, DEFAULT_BALL_SPEED);
 
-            if(p1.score >= 4 || p2.score >= 4) {
+            if(p1.score >= 6 || p2.score >= 6) {
                 Player::resetWin(&p1, &p2);
                 resetBall(&p1,&p2,&ball,&updateFlag,DEFAULT_BALL_SPEED);
                 p1Input.text.clear();
@@ -209,13 +322,46 @@ int main(void)
             sp1.updateSkill();
             sp2.updateSkill();
 
+            p1timer = to_string(sp1.timeremaining/60.0f);
+            p2timer = to_string(sp2.timeremaining/60.0f);
+
+            for(int i = 0; i < 4; i++) {
+                p1timer.pop_back();
+                p2timer.pop_back();
+            }
             
+            DrawText(p1timer.data(), 100, screenHeight -100, 30, BLACK);
+            DrawText(p2timer.data(), 1000, screenHeight - 100, 30, BLACK);
+
+            
+
+
+            EndDrawing();
+            break;
+        
+        case 2:
+            BeginDrawing();
+            ClearBackground(RAYWHITE);
+
+            // Back to menu:
+            DrawRectangleLinesEx(SkillRec, 2, BLACK);
+            DrawText(skillInput.text.data(), 610, 684, 30, GREEN);
+
+            if(skillInput.isActive) {
+                DrawRectangleLinesEx(SkillRec, 2, RED);
+            }
+            else DrawRectangleLinesEx(SkillRec, 2, BLACK);
+
+            backToMenu(&skillInput);
+
+            // skills player 1:
+            p1skillshandler(&P1S1Input, &P1S2Input, &P1S3Input, &sp1, 1);
+            p1skillshandler(&P2S1Input, &P2S2Input, &P2S3Input, &sp2, 2);
 
             
             
 
-
-        EndDrawing();
+            EndDrawing();
         
         default:
             break;
@@ -291,3 +437,101 @@ void handleInputChar(playerInput *inputP1, playerInput *inputP2){
         }
     }
 }
+
+    void skillInputCheck(playerInput *skill) {
+        if(isMouseInsideRec(skill-> inputRec) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            skill -> isActive = true;
+            skill -> text = "Menu";
+            gameState = 2;
+        } else if(isMouseInsideRec(skill-> inputRec)) skill -> isActive = true;
+        else skill -> isActive = false;
+    }
+
+    void backToMenu(playerInput *skill) {
+        if(isMouseInsideRec(skill-> inputRec) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            skill -> isActive = true;
+            skill -> text = "Skills";
+            gameState = 0;
+        } else if(isMouseInsideRec(skill-> inputRec)) skill -> isActive = true;
+        else skill -> isActive = false;
+    }
+
+    void p1skillshandler(playerInput *p1s1, playerInput *p1s2, playerInput *p1s3, Skill *sp1, int parameter) {
+        DrawRectangleLinesEx(p1s1 -> inputRec, 2, BLACK);
+        DrawRectangleLinesEx(p1s2 -> inputRec, 2, BLACK);
+        DrawRectangleLinesEx(p1s3 -> inputRec, 2, BLACK);
+        string ms1 = "S1: Increases player's speed";
+        string ms2 = "S2: Changes ball direction";
+        string ms3 = "S3: Changes enemy's controls";
+        
+
+        Color test;
+        if(parameter == 1) {
+            test = BLUE;
+            DrawText(p1s1 ->text.data(), 110, 225, 60, BLUE);
+            DrawText(p1s2 ->text.data(), 240, 225, 60, BLUE);
+            DrawText(p1s3 ->text.data(), 370, 225, 60, BLUE);
+        }
+        else {
+            test = RED;
+            DrawText(p1s1 ->text.data(), 683 + 110, 225, 60, RED);
+            DrawText(p1s2 ->text.data(), 683 + 240, 225, 60, RED);
+            DrawText(p1s3 ->text.data(), 683 + 370, 225, 60, RED);
+        }
+
+        // changing skills && checking mouse
+        if(p1s1->isActive) {
+            DrawRectangleLinesEx(p1s1 -> inputRec, 2, test);
+        } else DrawRectangleLinesEx(p1s1 -> inputRec, 2, BLACK);
+        if(p1s2->isActive) {
+            DrawRectangleLinesEx(p1s2 -> inputRec, 2, test);
+        } else DrawRectangleLinesEx(p1s2 -> inputRec, 2, BLACK);
+        if(p1s3->isActive) {
+            DrawRectangleLinesEx(p1s3 -> inputRec, 2, test);
+        } else DrawRectangleLinesEx(p1s3 -> inputRec, 2, BLACK);
+
+        if(isMouseInsideRec(p1s1->inputRec) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            p1s1->isActive = true;
+            p1s2->isActive = false;
+            p1s3->isActive = false;
+            sp1->id = 1;
+            sp1->skill_time = 180;
+            sp1->cd = 15*60;
+            sp1->timeremaining = 0;
+            
+            
+        }
+        if(isMouseInsideRec(p1s2->inputRec) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            p1s1->isActive = false;
+            p1s2->isActive = true;
+            p1s3->isActive = false;
+            sp1->id = 2;
+            sp1->skill_time = 0;
+            sp1->cd = 15*60;
+            sp1->timeremaining = 0;
+            
+        }
+        if(isMouseInsideRec(p1s3->inputRec) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            p1s1->isActive = false;
+            p1s2->isActive = false;
+            p1s3->isActive = true;
+            sp1->id = 3;
+            sp1->skill_time = 180;
+            sp1->cd = 15*60;
+            sp1->timeremaining = 0;
+            
+        }
+
+        if(p1s1 -> isActive) {
+            if(parameter == 1) DrawText(ms1.data(), 100, 650, 30, BLACK);
+            else DrawText(ms1.data(), 783, 650, 30, BLACK);
+        }
+        if(p1s2 -> isActive) {
+            if(parameter == 1) DrawText(ms2.data(), 100, 650, 30, BLACK);
+            else DrawText(ms2.data(), 783, 650, 30, BLACK);
+        }
+        if(p1s3 -> isActive) {
+            if(parameter == 1) DrawText(ms3.data(), 100, 650, 30, BLACK);
+            else DrawText(ms3.data(), 783, 650, 30, BLACK);
+        }
+    }

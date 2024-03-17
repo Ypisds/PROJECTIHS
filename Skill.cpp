@@ -75,4 +75,6 @@ void Skill::updateSkill() {
     this->timeremaining--;
     if(this->cd - this->timeremaining >= this->skill_time) this->isActive = false;
 
+    if(timeremaining <=0) timeremaining = 0;
+
 }
